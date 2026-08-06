@@ -39,6 +39,79 @@
   <div class="foot">התוכן מוצפן (AES-256) · ההרשאה נקבעת לפי הסיסמה</div>
 </div>
 <script>
+/* ===== מצב חתימה ללקוח (#sign=) — ללא סיסמה, מציג את הטופס בלבד ===== */
+(function(){
+ if(!location.hash.startsWith("#sign="))return;
+ let f={};try{f=JSON.parse(decodeURIComponent(escape(atob(location.hash.slice(6)))))}catch(e){return}
+ const v=x=>x||"________";
+ const paras=[["c","בס\"ד"],["r","שם הנרשם: "+v(f.name)+"    תאריך: "+v(f.date)],
+  ["r","לכבוד: שם שיכון ויזמות בע\"מ, ירושלים    א.ג.נ.,"],
+  ["t","הנדון: הצעה/בקשה לרכישת דירה בפרויקט \"הר-סוף\" בשיפולי ההר, אילת"],
+  ["n","1. אנו הח\"מ מבקשים לרכוש את הדירה: גוש 40232 חלקה 20-22, תכנית 602-0453795, בניין "+v(f.bldg)+", דירה מס' "+v(f.apt)+" (להלן: \"הדירה\")."],
+  ["n","2. הדירה בת "+v(f.rooms)+" חדרים, בקומה "+v(f.floor)+", בהתאם לתוכניות הראשוניות והמפרט שהוצגו בפנינו. ידוע לנו כי התכניות אינן סופיות וכפופות לשינויים ככל שיבוצעו ע\"י החברה."],
+  ["n","3. אנו מציעים לשלם תמורת הדירה סך "+v(f.price)+" ₪ (במילים: "+v(f.words)+" ש\"ח). התמורה תוצמד למדד תשומות הבניה ממועד החתימה, בשיעורים הקבועים בחוק המכר, וכוללת עלויות ערבויות בנקאיות."],
+  ["n","3.1 תנאי תשלום: א. "+v(f.p1s)+" ₪ ("+v(f.p1p)+"%) במועד חתימת הסכם המכר. ב. "+v(f.p2s)+" ₪ ("+v(f.p2p)+"%) בהלוואת קבלן / תשלומים לינאריים. ג. יתרה "+v(f.p3s)+" ₪ ("+v(f.p3p)+"%) עד 30 יום לפני המסירה, כתנאי למסירת החזקה."],
+  ["n","4. לדירה תוצמד חניה מס' "+v(f.park)+" ומחסן בשטח כ-"+v(f.stor)+" מ\"ר ברוטו."],
+  ["n","5. נתקשר בהסכם מכר ע\"פ הנוסח שקיבלנו העתק ממנו."],
+  ["n","6. להוכחת רצינות אנו מפקידים דמי רצינות בסך 30,000 ₪ לפקודת שם שיכון ויזמות בע\"מ, ומתחייבים לחתום על חוזה המכר בתוך 14 ימים מיום שנוזמן."],
+  ["n","7. אם לא נחתום בתוך 14 ימים מהזימון (ולכל המאוחר 30 יום מחתימה זו) — אנו מסכימים לחילוט 5,000 ₪ מהפיקדון כפיצוי מוסכם, ולהצעת הדירה לאחרים."],
+  ["n","8. בנוסף לתמורה נשלם: מס רכישה (אם יחול); שכ\"ט עו\"ד 5,917 ₪ בחתימת החוזה; אגרות רישום; חיבורי מונים; השתתפות 800 ₪ לחדר עבור תשריטי צו בית משותף (בגמר חשבון טרם מסירה)."],
+  ["n","9. בדקנו את הפרויקט, המגרש וכל הנתונים, וניתנה לנו אפשרות להתייעץ עם יועצים מטעמנו — לא תהיה לנו כל טענה בקשר לכך."],
+  ["n","10. לחברה שיקול דעת בלעדי למכור או לסרב. מסמך זה אינו הסכם מכר ואינו מחייב את החברה למכור; אולם ממועד חתימתו החברה לא תשווק את הדירה לאחרים עד למתן תשובה למציע. אם הבקשה לא תאושר — יוחזר הפיקדון ולא תהיה לנו טענה."],
+  ["n","הערות: "+(f.notes||"—")],
+  ["r","ולראיה באנו על החתום, היום "+v(f.date)+":"],
+  ["r","פרטי המציע: "+v(f.buyer1)+"   ת.ז: "+v(f.tz1)],
+  ["r","שם המציעה: "+v(f.buyer2)+"   ת.ז: "+v(f.tz2)],
+  ["r","כתובת: "+v(f.addr)+"   דוא\"ל: "+v(f.email)],
+  ["r","טלפון בית: "+v(f.phoneH)+"   נייד: "+v(f.phoneM)]];
+ document.addEventListener("DOMContentLoaded",()=>{
+  document.body.innerHTML=`<div style="max-width:760px;margin:0 auto;padding:20px 14px 60px;background:#FDFBF6;min-height:100vh;box-sizing:border-box">
+   <div style="text-align:center;color:#8F7440;letter-spacing:.15em;font-size:22px;font-weight:300">הַר סוּף <b>BOUTIQUE</b></div>
+   <div style="text-align:center;color:#6E6350;font-size:12px;margin-bottom:16px">אדני ארץ — שם שיכון ויזמות בע"מ · טופס הרשמה לחתימה</div>
+   ${paras.map(p=>`<p style="${p[0]==="c"?"text-align:center;font-weight:600":p[0]==="t"?"text-align:center;font-weight:700;text-decoration:underline":"text-align:right"};font-size:13.5px;line-height:1.7;margin:8px 0;color:#241F15">${p[1]}</p>`).join("")}
+   <div style="margin-top:18px"><b style="font-size:14px;color:#241F15">חתימה (חתום עם האצבע בתוך המסגרת):</b>
+    <canvas id="cs" style="width:100%;height:170px;background:#fff;border:2px dashed #8F7440;border-radius:10px;touch-action:none;margin-top:8px"></canvas>
+    <div style="display:flex;gap:10px;margin-top:10px;flex-wrap:wrap">
+     <button id="csend" style="flex:2;background:linear-gradient(180deg,#C9A566,#8F7440);color:#17130C;border:none;border-radius:10px;padding:14px;font-size:16px;font-weight:700;font-family:inherit">✓ סיים וחתום — שלח בחזרה</button>
+     <button id="cclr" style="flex:1;background:none;border:1px solid #B9AE97;border-radius:10px;padding:14px;font-size:14px;color:#6E6350;font-family:inherit">נקה</button></div>
+    <p id="cmsg" style="font-size:12.5px;color:#6E6350;text-align:center;margin-top:10px"></p></div></div>`;
+  const c=document.getElementById("cs");c.width=c.offsetWidth*2;c.height=340;
+  const x=c.getContext("2d");x.scale(2,2);x.lineWidth=2.2;x.lineCap="round";x.strokeStyle="#1A2B6D";
+  let draw=false,px=0,py=0,dirty=false;
+  const pos=e=>{const r=c.getBoundingClientRect();const t=e.touches?e.touches[0]:e;return[t.clientX-r.left,t.clientY-r.top]};
+  c.addEventListener("pointerdown",e=>{e.preventDefault();draw=true;[px,py]=pos(e)});
+  c.addEventListener("pointermove",e=>{if(!draw)return;e.preventDefault();const[nx,ny]=pos(e);
+   x.beginPath();x.moveTo(px,py);x.lineTo(nx,ny);x.stroke();px=nx;py=ny;dirty=true});
+  window.addEventListener("pointerup",()=>draw=false);
+  document.getElementById("cclr").onclick=()=>{x.clearRect(0,0,c.width,c.height);dirty=false};
+  document.getElementById("csend").onclick=async()=>{
+   const m=document.getElementById("cmsg");
+   if(!dirty){m.textContent="נא לחתום בתוך המסגרת לפני השליחה";return}
+   const W=1000,pad=40,lh=30,cv=document.createElement("canvas"),ctx=cv.getContext("2d");
+   ctx.font="19px Segoe UI, Arial";
+   const wrap=t=>{const ws=t.split(" ");const ls=[];let cur="";ws.forEach(w=>{
+    if(ctx.measureText(cur+" "+w).width>W-pad*2&&cur){ls.push(cur);cur=w}else cur=cur?cur+" "+w:w});if(cur)ls.push(cur);return ls};
+   let all=[];paras.forEach(p=>{wrap(p[1]).forEach(l=>all.push([p[0],l]));all.push(["s",""])});
+   cv.width=W;cv.height=all.length*lh+340;
+   ctx.fillStyle="#fff";ctx.fillRect(0,0,W,cv.height);ctx.fillStyle="#1A160F";ctx.direction="rtl";ctx.textAlign="right";
+   ctx.font="bold 24px Segoe UI, Arial";ctx.fillText("אדני ארץ — הר סוף בוטיק, אילת · טופס הרשמה חתום",W-pad,50);
+   ctx.font="19px Segoe UI, Arial";let y=100;
+   all.forEach(l=>{if(l[0]==="s"){y+=10;return}
+    if(l[0]==="c"||l[0]==="t"){ctx.font="bold 19px Segoe UI, Arial";ctx.textAlign="center";ctx.fillText(l[1],W/2,y);ctx.textAlign="right";ctx.font="19px Segoe UI, Arial"}
+    else ctx.fillText(l[1],W-pad,y);y+=lh});
+   ctx.fillText("חתימה:",W-pad,y+30);
+   const sim=new Image();sim.onload=async()=>{ctx.drawImage(sim,W-pad-380,y+45,340,150);
+    ctx.strokeStyle="#999";ctx.strokeRect(W-pad-380,y+45,340,150);
+    const blob=await new Promise(r=>cv.toBlob(r,"image/jpeg",.85));
+    const file=new File([blob],"טופס-הרשמה-חתום.jpg",{type:"image/jpeg"});
+    if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){
+     try{await navigator.share({files:[file],title:"טופס הרשמה חתום — הר סוף בוטיק"});
+      m.textContent="✓ נשלח! תודה — נציג המכירות יקבל את הטופס החתום";return}catch(e){}}
+    const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="טופס-הרשמה-חתום.jpg";a.click();
+    m.innerHTML="✓ הטופס החתום ירד למכשיר — נא לשלוח אותו בוואטסאפ לנציג המכירות";
+   };sim.src=c.toDataURL("image/png")};
+ });
+})();
 const b2a=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
 async function tryDecrypt(blob,pw){
   const km=await crypto.subtle.importKey("raw",new TextEncoder().encode(pw),"PBKDF2",false,["deriveBits"]);
